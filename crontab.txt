@@ -1,0 +1,24 @@
+# ┌───────── minute (0 - 59)
+# │ ┌─────── hour (0 - 23)
+# │ │ ┌───── day of month (1 - 31)
+# │ │ │ ┌─── month (1 - 12)
+# │ │ │ │ ┌─ day of week (0 - 7) (Sunday=0 or 7)
+# │ │ │ │ │
+# │ │ │ │ │
+# │ │ │ │ │
+# * * * * * command to execute
+
+# Archive Log Backup — Every 30 minutes
+*/30 * * * * /path/to/rman_archive_backup.sh
+
+# Level 1 Backup — Every day at 22:00, excluding Sundays
+0 22 * * 1-6 /path/to/rman_level1_backup.sh
+
+# Level 0 Backup — Sunday at 00:00
+0 0 * * 0 /path/to/rman_level0_backup.sh
+
+# Validation — Sunday at 10:00
+0 10 * * 0 /path/to/rman_backup_validation.sh
+
+# Log Cleanup — Sunday at 20:00
+0 20 * * 0 /path/to/rman_log_cleanup.sh
