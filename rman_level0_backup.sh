@@ -4,6 +4,7 @@
 TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
 LOG_DIR="/path/to/logs"
 LOGFILE="${LOG_DIR}/rman_backup_level0_${TIMESTAMP}.log"
+EMAIL="you@example.com"
 
 export ORACLE_SID=your_sid
 export ORAENV_ASK=NO
@@ -50,4 +51,4 @@ echo "===== RMAN Backup Completed at $(date) =====" >> "$LOGFILE"
 echo "Total Duration: ${DURATION} seconds" >> "$LOGFILE"
 
 # ===== EMAIL NOTIFICATION =====
-mailx -s "RMAN Level 0 Backup Completed on $ORACLE_SID [$(date)]" you@example.com < "$LOGFILE"
+mailx -s "RMAN Level 0 Backup Completed on $ORACLE_SID [$(date)] - ${DURATION}s" "$EMAIL" < "$LOGFILE"
