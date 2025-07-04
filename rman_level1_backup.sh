@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# ===== CONFIGURATION =====
 TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
 LOG_DIR="/path/to/logs"
 ARCHIVE_DIR="${LOG_DIR}/archives"
