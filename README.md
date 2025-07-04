@@ -1,47 +1,60 @@
 # Oracle RMAN Backup Scripts
 
-A collection of production-grade Oracle RMAN shell scripts for automating backups. Includes Level 0, Level 1, and archived log-only backups with built-in logging, cleanup, and notification features.
+A curated suite of production-grade Oracle RMAN shell scripts for backup, validation, and housekeeping. These scripts automate Level 0, Level 1, and archived log backups—with integrated logging, compression, and notifications.
 
 ---
 
 ## 🗃️ Included Scripts
 
-### 1. `rman_level0_backup.sh`
-Performs a full **incremental Level 0** backup:
+### `rman_level0_backup.sh`
+Performs a full **incremental Level 0 compressed** backup:
 - Backs up the entire database
 - Includes all archived logs (`DELETE INPUT`)
 - Backs up SPFILE and control file (to tape and disk)
-- Generates timestamped log files
-- Archives older logs (>60) to a `.tar.gz` file
+- Logs duration and status, emails result
 
-### 2. `rman_level1_backup.sh`
-Performs an **incremental Level 1** backup:
+### `rman_level1_backup.sh`
+Performs an **incremental Level 1 compressed** backup:
 - Backs up changes since last Level 0
 - Includes archived logs (`DELETE INPUT`)
-- Backs up SPFILE and control file
-- Retains last 60 logs and archives the rest
+- Includes control file and SPFILE
+- Logs duration and status, emails result
 
-### 3. `rman_archivelog_backup.sh`
-Backs up **only archived logs**:
+### `rman_archivelog_backup.sh`
+Backs up **only archived logs**, with compression:
 - Deletes logs after successful backup
-- Backs up current control file
-- Compresses old logfiles into archive
+- Validates and backs up current control file
+- Logs duration and status, emails result
+
+### `rman_backup_validation.sh`
+Validates RMAN backups and detects logical corruption:
+- Uses `RESTORE VALIDATE` for physical checks
+- Uses `BACKUP VALIDATE CHECK LOGICAL` for block integrity
+- Validates control file, SPFILE, and archived logs
+- Allocates tape channels
+- Logs duration and result, emails summary
+
+### `rman_log_cleanup.sh`
+Standalone log rotation script:
+- Finds `.log` files in `LOG_DIR` older than 60 days
+- Archives them to `.tar.gz` under `archives/`
+- Logs cleanup activity separately
 
 ---
 
 ## 🧰 Prerequisites
 
-- Oracle RMAN configured with `sbt_tape` device
-- Shell environment variables: `ORACLE_SID`, `oraenv`
-- External commands:
+- Oracle RMAN with `sbt_tape` integration
+- Environment variables: `ORACLE_SID`, `oraenv` configured
+- External tools required:
   - `mailx` for email alerts
-  - `tar` for log archiving
-- Proper directory paths defined in each script
+  - `tar`, `find`, `date` for log handling and archiving
 
 ---
 
-## 📨 Notifications
+## 📬 Notifications
 
-Each script sends an email with the backup log to a specified address. Update:
+Each script uses a shared `EMAIL` variable to send status updates and logs.  
+Edit this line to set your email:
 ```bash
-you@example.com
+EMAIL="you@example.com"
